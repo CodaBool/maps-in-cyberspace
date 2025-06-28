@@ -2,22 +2,45 @@ permissions:
   contents: write
 on:
   push:
-    branchs:
-      - main
+    tags:
+      - "*" # run only against tags
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: get version and store module
+      # https://github.com/marketplace/actions/checkout
+      - uses: actions/checkout@v4
+      - name: get version
         run: |
           echo "version=$(cat module.json | jq -r .version)" >> $GITHUB_ENV
-          echo "DATA=$(cat module.json | jq -c | sed 's/"/\\"/g')" >> $GITHUB_ENV
+          echo "minimum=$(cat module.json | jq -r .compatibility.minimum)" >> $GITHUB_ENV
+          echo "verified=$(cat module.json | jq -r .compatibility.verified)" >> $GITHUB_ENV
+
+
+          changelog_contents=""
+          inside_section=false
+          while IFS= read -r line; do
+            if [[ $line == "# Version "* ]]; then
+              if [ "$inside_section" = false ]; then
+                inside_section=true
+              else
+                break
+              fi
+            fi
+            if [ "$inside_section" = true ] && [[ $line != "# Version"* ]]; then
+              changelog_contents="$changelog_contents$line"$'\n'
+            fi
+          done < changelog.md
+          echo "$changelog_contents" > latest.md
+
       - name: cleanup and zip
         run: |
           rm -rf .git .github
-          rm *.md
+          rm private.md readme.md
           rm *.sh
+          rm LICENSE
           zip -r maps-in-cyberspace.zip .
-      - uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+      - uses: softprops/action-gh-release@v2
+        with:
+          body_path: latest.md
+          tag_name: v${{ env.version }}

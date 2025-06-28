@@ -1,17 +1,21 @@
 {
   "id": "maps-in-cyberspace",
   "title": "Maps in Cyberspace",
-  "version": "2.0.0",
+  "version": "2.13.0",
   "compatibility": {
     "minimum": "11",
-    "verified": "11"
+    "verified": "13"
   },
-  "authors": [{
-    "name": "CodaBool",
-    "discord": "codabool",
-    "email": "codabool@pm.me",
-    "url": "https://codabool.com"
-  }],
+  "authors": [
+    {
+      "name": "CodaBool",
+      "discord": "codabool",
+      "email": "codabool@pm.me",
+      "url": "https://codabool.com"
+    }
+  ],
+  "styles": ["main.css"],
+  "esmodules": ["main.js"],
   "url": "https://github.com/CodaBool/maps-in-cyberspace",
   "bugs": "https://github.com/CodaBool/maps-in-cyberspace/issues",
   "changelog": "https://github.com/CodaBool/maps-in-cyberspace/blob/main/changelog.md",
@@ -25,7 +29,18 @@
       "path": "packs/cybermaps",
       "type": "Scene",
       "ownership": {
-        "PLAYER": "OBSERVER",
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "cybermaps-macros",
+      "label": "cybermaps-macros",
+      "path": "packs/macros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       },
       "flags": {}
