@@ -10,6 +10,10 @@
 ⠀⠀⠀⠀⠀⠀⠀⠶⡿⠤⠚⠁⠀⠀⠀⢀⣠⡤⢺⣥⠟⢡⠃⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀
 </pre>
+# Version 2.13.1
+- Bug fixes. I maybe went overboard with the confetti
+- Since door animations are only a V13+ thing. I've mentions of animations if on Foundry below V13
+
 # Version 2.13.0
 I've just double checked with the scenes that they are still working in V13. They all seem to be running fine.
 
@@ -24,7 +28,7 @@ The new macro is found in the compendium tab and adds a way to edit all doors on
 The optional macro has you pick a door animation and sound. Then performs that update for you to all doors.
 
 ## Minimum bumped to V12+
-Since the macro uses the new V2 UI. I won't be supporting V11 anymore with this update. 
+Since the macro uses the new V2 UI. I won't be supporting V11 anymore with this update.
 
 ## Minor Fix
 I was noticing some texture error messages which pointed to a texture that did not exist. About 1/3 of the scenes had this issue, I have updated those scenes. It's not a breaking issue but if you don't like errors in the console log, reimport the scene and it should be resolved.
