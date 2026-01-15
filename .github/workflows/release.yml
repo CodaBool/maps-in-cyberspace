@@ -1,3 +1,5 @@
+permissions:
+  contents: write
 on:
   push:
     tags:
@@ -37,6 +39,12 @@ jobs:
           rm *.sh
           rm LICENSE
           zip -r maps-in-cyberspace.zip .
+      # https://github.com/marketplace/actions/gh-release
+      - uses: softprops/action-gh-release@v2
+        with:
+          body_path: latest.md
+          tag_name: v${{ env.version }}
+          files: module.json
       - name: foundry release
         run: |
           JSON_PAYLOAD=$(cat <<EOF
