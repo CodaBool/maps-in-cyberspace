@@ -10,6 +10,9 @@
 ⠀⠀⠀⠀⠀⠀⠀⠶⡿⠤⠚⠁⠀⠀⠀⢀⣠⡤⢺⣥⠟⢡⠃⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀
 </pre>
+# Version 2.13.2
+- make the ui for the radio look nicer
+	- there is a known issue with placeable walls in Foundry v14 build 354 which the isDoor is not correctly set to true. If running Foundry v14 build 354 you can expect the macro to be broken until Foundry fixes this
 # Version 2.13.1
 - Bug fixes. I maybe went overboard with the confetti
 - Since door animations are only a V13+ thing. I've mentions of animations if on Foundry below V13

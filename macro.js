@@ -42,55 +42,64 @@ const animationTypes = [
   "swivel",
   "none",
 ]
+const radioStyle = `style="appearance:auto; -webkit-appearance:radio; opacity:1; position:relative; z-index:2; width: 21px; height: 21px"`;
+
 
 // Write the html for the dialog
-let content = '<form><div class="form-group" style="display: flex; flex-direction: column; align-items: flex-start"><h1>Welcome!</h1><p>I wrote this to help edit all the doors in the scene. Since Foundry has now added door sounds and animations.</p><p>If you want an animated door you will first need to pick a door color. Just pick one which best matches your scene.</p>'
+const hasAnimations = game.release.generation > 12
+let content = `<form><div class="form-group" style="display: flex; flex-direction: column; align-items: flex-start"><h1>Welcome!</h1><p>I wrote this to help edit all the doors in the scene. Since Foundry has now added door sounds${hasAnimations ? " and animations" : ""}.</p>`
 
-// add the door color options
-doorColors.forEach((color, index) => {
-  content += `
-    <div style="flex:none">
-      <input type="radio" name="color" value="${index}">
-      <img src="${color}" width="227" height="46" style="margin: 1px; background: black">
-    </div>
+if (hasAnimations) {
+  content += "<p>If you want an animated door you will first need to pick a door color. Just pick one which best matches your scene.</p>"
+  // add the door color options
+  doorColors.forEach((color, index) => {
+    content += `
+      <label for="color-${index}" style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:none">
+        <input ${radioStyle} type="radio" name="color" value="${index}" id="color-${index}">
+        <img src="${color}" width="227" height="46" style="margin: 1px; background: black">
+      </label>
     `
-})
-
-// start the animation section
-content += '<br/><p>Next set the animation type for all doors. I recommend either Ascend or slide. If you don\'t want an animation, select "none"</p>'
-
-// add the animation options
-animationTypes.forEach((type, index) => {
-  content += `
-    <div style="flex:none">
-      <input type="radio" name="type" value="${index}">
-      <label>${type}</label>
-    </div>
+  })
+  // start the animation section
+  content += '<br/><p>Next set the animation type for all doors. I recommend either Ascend or slide. If you don\'t want an animation, select "none"</p>'
+  // add the animation options
+  animationTypes.forEach((type, index) => {
+    content += `
+      <label for="type-${index}" style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:none">
+        <input ${radioStyle} type="radio" name="type" value="${index}" id="type-${index}">
+        <span>${type}</span>
+      </label>
     `
-})
+  })
+}
+
+
+
 
 // start the sound section
-content += '<br/><p>Next pick a sound effect for all doors. I recommend either futuristicFast or futuristicHydraulic. If you don\'t want a sound, select "none"</p>'
+content += '<br/><p>Pick a sound effect for all doors. I recommend either futuristicFast or futuristicHydraulic. If you don\'t want a sound, select "none"</p>'
 
 // add the sound options
 doorSound.forEach((type, index) => {
   content += `
-    <div style="flex:none">
-      <input type="radio" name="sound" value="${index}">
-      <label>${type}</label>
-    </div>
-    `
+    <label for="sound-${index}" style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:none">
+      <input ${radioStyle} type="radio" name="sound" value="${index}" id="sound-${index}">
+      <span>${type}</span>
+    </label>
+  `
 })
 
-// double doors option
-content += '<br/><p>Finally, specifiy if two doors are shown per each door. This is recommended if using the slide animation.</p>'
-content += `<div style="flex:none">
-  <input type="checkbox" id="doubleDoors">
-  <label>Double Doors</label>
-</div>`
+if (hasAnimations) {
+  // double doors option
+  content += '<br/><p>Finally, specifiy if two doors are shown per each door. This is recommended if using the slide animation.</p>'
+  content += `<div style="flex:none">
+    <input type="checkbox" id="doubleDoors">
+    <label>Double Doors</label>
+  </div>`
+}
 
 // give warning and finish form
-content += '<br/><p>WARNING: This will overwrite any door settings on the currently viewed scene. If you have set door sounds, animations, double doors, door textures yourself. THESE WILL BE OVERWRITTEN</p>'
+content += `<br/><p>WARNING: This will overwrite any door settings on the currently viewed scene. If you have set door sounds${hasAnimations ? ", animations, double doors, door textures yourself" : ""}. THESE WILL BE OVERWRITTEN</p>`
 content += '</div></form>'
 
 foundry.applications.api.DialogV2.wait({
@@ -153,7 +162,7 @@ foundry.applications.api.DialogV2.wait({
       // Perform the update
       await canvas.scene.updateEmbeddedDocuments("Wall", updates);
 
-      ui.notifications.info(`updated ${doors.length} doors. You need to refresh the page to see all the changes`)
+      ui.notifications.info(`updated ${doors.length} doors. ${hasAnimations ? "You may need to refresh the page to see all the changes." : ""}`)
     }
   }],
 })
