@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # https://github.com/marketplace/actions/checkout
-      - uses: actions/checkout@v4
-      - name: get version
+      - uses: actions/checkout@v6
+      - name: jq props and store module
         run: |
           echo "version=$(cat module.json | jq -r .version)" >> $GITHUB_ENV
           echo "minimum=$(cat module.json | jq -r .compatibility.minimum)" >> $GITHUB_ENV
@@ -32,15 +32,32 @@ jobs:
             fi
           done < changelog.md
           echo "$changelog_contents" > latest.md
-
-      - name: cleanup and zip
-        run: |
-          rm -rf .git .github
-          rm private.md readme.md
-          rm *.sh
-          rm LICENSE
-          zip -r maps-in-cyberspace.zip .
+      # https://github.com/marketplace/actions/gh-release
       - uses: softprops/action-gh-release@v2
         with:
           body_path: latest.md
           tag_name: v${{ env.version }}
+          files: module.json
+      - name: foundry release
+        run: |
+          JSON_PAYLOAD=$(cat <<EOF
+          {
+            "id": "maps-in-cyberspace",
+            "dry-run": false,
+            "release": {
+              "version": "${{ env.version }}",
+              "manifest": "https://github.com/CodaBool/maps-in-cyberspace/releases/download/v${{ env.version }}/module.json",
+              "notes": "https://github.com/CodaBool/maps-in-cyberspace/blob/main/changelog.md",
+              "compatibility": {
+                "minimum": "${{ env.minimum }}",
+                "verified": "${{ env.verified }}"
+              }
+            }
+          }
+          EOF
+          )
+
+          curl -s -X POST https://api.foundryvtt.com/_api/packages/release_version \
+            -H "Content-Type: application/json" \
+            -H "Authorization: ${{ secrets.FOUNDRY_TOKEN }}" \
+            -d "$JSON_PAYLOAD"
